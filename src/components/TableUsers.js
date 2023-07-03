@@ -4,6 +4,9 @@ import Table from "react-bootstrap/Table";
 import { fetchAllUser } from "../services/UserService";
 import ReactPaginate from "react-paginate";
 import ModalAddNew from "./ModalAddNew";
+import ModalEditUser from "./ModalEditUser";
+import _ from "lodash";
+import ModalComfirm from "./ModalConfirm";
 
 function TableUsers() {
   const [listUser, setListUser] = useState([]);
@@ -12,13 +15,11 @@ function TableUsers() {
 
   const [isShowModalAddNew, setIsShowModalAddNew] = useState(false);
 
-  const handleClose = () => {
-    setIsShowModalAddNew(false);
-  };
+  const [isShowModalEdit, setIsShowModalEdit] = useState(false);
+  const [dataUserEdit, setDataUserEdit] = useState({});
 
-  const handleUpdateTable = (user) => {
-    setListUser([user, ...listUser]);
-  };
+  const [isShowModalDelete, setIsShowModalDelete] = useState(false);
+  const [dataUserDelete, setDataUserDelete] = useState({});
 
   useEffect(() => {
     getUsers(1);
@@ -33,11 +34,36 @@ function TableUsers() {
       setTotalPages(res.total_pages);
     }
   };
-  console.log(listUser);
 
+  const handleClose = () => {
+    setIsShowModalAddNew(false);
+    setIsShowModalEdit(false);
+    setIsShowModalDelete(false);
+  };
+
+  const handleUpdateTable = (user) => {
+    setListUser([user, ...listUser]);
+  };
   const handlePageClick = (event) => {
     console.log(event);
     getUsers(+event.selected + 1);
+  };
+
+  const handleEditUser = (user) => {
+    setDataUserEdit(user);
+    setIsShowModalEdit(true);
+  };
+
+  const handleEditUserFromModal = (user) => {
+    let cloneListUser = _.cloneDeep(listUser);
+    let index = listUser.findIndex((item) => item.id === user.id);
+    cloneListUser[index].first_name = user.first_name;
+    setListUser(cloneListUser);
+  };
+
+  const handleDeleteUser = (user) => {
+    setIsShowModalDelete(true);
+    setDataUserDelete(user);
   };
 
   return (
@@ -58,6 +84,7 @@ function TableUsers() {
             <th>First Name</th>
             <th>Last Name</th>
             <th>email</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -70,6 +97,20 @@ function TableUsers() {
                   <td>{item.first_name}</td>
                   <td>{item.last_name}</td>
                   <td>{item.email}</td>
+                  <td>
+                    <button
+                      className="btn btn-warning mx-3"
+                      onClick={() => handleEditUser(item)}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      className="btn btn-danger mx-3"
+                      onClick={() => handleDeleteUser(item)}
+                    >
+                      Delete
+                    </button>
+                  </td>
                 </tr>
               );
             })}
@@ -100,6 +141,20 @@ function TableUsers() {
         show={isShowModalAddNew}
         handleClose={handleClose}
         handleUpdateTable={handleUpdateTable}
+      />
+
+      <ModalEditUser
+        show={isShowModalEdit}
+        handleClose={handleClose}
+        dataUserEdit={dataUserEdit}
+        handleUpdateTable={handleUpdateTable}
+        handleEditUserFromModal={handleEditUserFromModal}
+      />
+
+      <ModalComfirm
+        show={isShowModalDelete}
+        handleClose={handleClose}
+        dataUserDelete={dataUserDelete}
       />
     </Container>
   );

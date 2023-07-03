@@ -8,7 +8,9 @@ import ModalEditUser from "./ModalEditUser";
 import _, { debounce } from "lodash";
 import ModalComfirm from "./ModalConfirm";
 import "./TableUsers.scss";
-import { CSVLink, CSVDownload } from "react-csv";
+import { CSVLink } from "react-csv";
+import Papa from "papaparse";
+import { toast } from "react-toastify";
 
 function TableUsers() {
   const [listUser, setListUser] = useState([]);
@@ -107,7 +109,7 @@ function TableUsers() {
     let result = [];
 
     if (listUser && listUser.length > 0) {
-      result.push(["Id", "Email", "First name", "Last name"]);
+      result.push(["Id", "first_name", "last_name", "email"]);
       listUser.map((item) => {
         let arr = [];
         arr[0] = item.id;
@@ -119,6 +121,53 @@ function TableUsers() {
 
       setDataExport(result);
       done();
+    }
+  };
+
+  const handleImportCSV = (event) => {
+    if (event.target && event.target.files && event.target.files[0]) {
+      let file = event.target.files[0];
+
+      if (file.type !== "text/csv") {
+        toast.error("Only accept csv file");
+        return;
+      }
+      Papa.parse(file, {
+        // header: true,
+        complete: function (results) {
+          let rawCSV = results.data;
+          if (rawCSV.length > 0) {
+            if (rawCSV[0] && rawCSV[0].length === 3) {
+              if (
+                rawCSV[0][0] !== "first_name" ||
+                rawCSV[0][1] !== "last_name" ||
+                rawCSV[0][2] !== "email"
+              ) {
+                toast.error("Wrong format header CSV file!");
+              } else {
+                let result = [];
+                // eslint-disable-next-line array-callback-return
+                rawCSV.map((item, index) => {
+                  if (index > 0 && item.length === 3) {
+                    let obj = {};
+                    obj.first_name = item[0];
+                    obj.last_name = item[1];
+                    obj.email = item[2];
+                    result.push(obj);
+                  }
+                });
+                setListUser(result);
+                console.log(result);
+              }
+            } else {
+              toast.error("Not found data on CSV file!");
+            }
+          } else {
+            toast.error("Not found data on CSV file!");
+          }
+          console.log("Finished: ", results.data);
+        },
+      });
     }
   };
 
@@ -140,7 +189,12 @@ function TableUsers() {
           <label htmlFor="file" className="btn btn-warning">
             <i className="fa-solid fa-file-import"></i> Import
           </label>
-          <input id="file" type="file" hidden />
+          <input
+            id="file"
+            type="file"
+            hidden
+            onChange={(event) => handleImportCSV(event)}
+          />
 
           <CSVLink
             filename={"users.csv"}
@@ -247,7 +301,6 @@ function TableUsers() {
         onPageChange={handlePageClick}
         containerClassName="pagination"
         activeClassName="active"
-        forcePage={10}
       />
       <ModalAddNew
         show={isShowModalAddNew}

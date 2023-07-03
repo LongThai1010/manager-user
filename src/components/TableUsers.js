@@ -5,7 +5,7 @@ import { fetchAllUser } from "../services/UserService";
 import ReactPaginate from "react-paginate";
 import ModalAddNew from "./ModalAddNew";
 import ModalEditUser from "./ModalEditUser";
-import _ from "lodash";
+import _, { debounce } from "lodash";
 import ModalComfirm from "./ModalConfirm";
 import "./TableUsers.scss";
 
@@ -24,6 +24,8 @@ function TableUsers() {
 
   const [sortBy, setSortBy] = useState("asc");
   const [sortField, setSortField] = useState("id");
+
+  const [keyword, setKeyword] = useState("");
 
   const handleSort = (sortBy, sortField) => {
     setSortBy(sortBy);
@@ -86,10 +88,31 @@ function TableUsers() {
     setListUser(cloneListUser);
   };
 
+  const handleSearch = debounce((e) => {
+    let term = e.target.value;
+    // console.log("check run keyword when call api", term);
+    if (term) {
+      let cloneListUser = _.cloneDeep(listUser);
+      cloneListUser = cloneListUser.filter((item) => item.email.includes(term));
+      setListUser(cloneListUser);
+    } else {
+      getUsers(1);
+    }
+  }, 800);
+
   return (
     <Container>
       <div className="my-3 container add-new">
         <h4>List Users:</h4>
+
+        <div className="col-4 ">
+          <input
+            className="form-control"
+            placeholder="search user by email..."
+            // value={keyword}
+            onChange={(e) => handleSearch(e)}
+          />
+        </div>
         <button
           className="btn btn-success"
           onClick={() => setIsShowModalAddNew(true)}
@@ -97,6 +120,7 @@ function TableUsers() {
           Add new user
         </button>
       </div>
+
       <Table striped bordered hover>
         <thead>
           <tr>

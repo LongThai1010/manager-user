@@ -4,7 +4,7 @@ import Table from "react-bootstrap/Table";
 import { fetchAllUser } from "../services/UserService";
 import ReactPaginate from "react-paginate";
 import ModalAddNew from "./ModalAddNew";
-import ModalEditUser from "./ModalEditUser";  
+import ModalEditUser from "./ModalEditUser";
 import _, { debounce } from "lodash";
 import ModalComfirm from "./ModalConfirm";
 import "./TableUsers.scss";
@@ -173,10 +173,10 @@ function TableUsers() {
 
   return (
     <Container>
-      <div className="my-3 container add-new">
+      <div className="my-3 container add-new d-sm-flex">
         <h4>List Users:</h4>
 
-        <div className="col-4 ">
+        <div className="col-12 col-sm-4 col-4 ">
           <input
             className="form-control"
             placeholder="search user by email..."
@@ -184,7 +184,7 @@ function TableUsers() {
             onChange={(e) => handleSearch(e)}
           />
         </div>
-        <div className="group-btns">
+        <div className="group-btns mt-sm-0 my-3">
           {/* Wow 1 mẹo custom ui cho input type file */}
           <label htmlFor="file" className="btn btn-warning">
             <i className="fa-solid fa-file-import"></i> Import
@@ -215,76 +215,77 @@ function TableUsers() {
         </div>
       </div>
 
-      <Table striped bordered hover>
-        <thead>
-          <tr>
-            <th>
-              <div className="sort-header">
-                <span>Id</span>
-                <span>
-                  <i
-                    className="fa-sharp fa-solid fa-down-long"
-                    onClick={() => handleSort("desc", "id")}
-                  ></i>
+      <div className="customize-table">
+        <Table striped bordered hover>
+          <thead>
+            <tr>
+              <th>
+                <div className="sort-header">
+                  <span>Id</span>
+                  <span>
+                    <i
+                      className="fa-sharp fa-solid fa-down-long"
+                      onClick={() => handleSort("desc", "id")}
+                    ></i>
 
-                  <i
-                    className="fa-sharp fa-solid fa-up-long"
-                    onClick={() => handleSort("asc", "id")}
-                  ></i>
-                </span>
-              </div>
-            </th>
-            <th>
-              <div className="sort-header">
-                <span> First Name</span>
-                <span>
-                  <i
-                    className="fa-sharp fa-solid fa-down-long"
-                    onClick={() => handleSort("desc", "first_name")}
-                  ></i>
+                    <i
+                      className="fa-sharp fa-solid fa-up-long"
+                      onClick={() => handleSort("asc", "id")}
+                    ></i>
+                  </span>
+                </div>
+              </th>
+              <th>
+                <div className="sort-header">
+                  <span> First Name</span>
+                  <span>
+                    <i
+                      className="fa-sharp fa-solid fa-down-long"
+                      onClick={() => handleSort("desc", "first_name")}
+                    ></i>
 
-                  <i
-                    className="fa-sharp fa-solid fa-up-long"
-                    onClick={() => handleSort("asc", "first_name")}
-                  ></i>
-                </span>
-              </div>
-            </th>
-            <th>Last Name</th>
-            <th>email</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {listUser &&
-            listUser.length > 0 &&
-            listUser.map((item) => {
-              return (
-                <tr key={item.id}>
-                  <td>{item.id}</td>
-                  <td>{item.first_name}</td>
-                  <td>{item.last_name}</td>
-                  <td>{item.email}</td>
-                  <td>
-                    <button
-                      className="btn btn-warning mx-3"
-                      onClick={() => handleEditUser(item)}
-                    >
-                      Edit
-                    </button>
-                    <button
-                      className="btn btn-danger mx-3"
-                      onClick={() => handleDeleteUser(item)}
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              );
-            })}
-        </tbody>
-      </Table>
-
+                    <i
+                      className="fa-sharp fa-solid fa-up-long"
+                      onClick={() => handleSort("asc", "first_name")}
+                    ></i>
+                  </span>
+                </div>
+              </th>
+              <th>Last Name</th>
+              <th>email</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {listUser &&
+              listUser.length > 0 &&
+              listUser.map((item) => {
+                return (
+                  <tr key={item.id}>
+                    <td>{item.id}</td>
+                    <td>{item.first_name}</td>
+                    <td>{item.last_name}</td>
+                    <td>{item.email}</td>
+                    <td>
+                      <button
+                        className="btn btn-warning mx-3"
+                        onClick={() => handleEditUser(item)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="btn btn-danger mx-3"
+                        onClick={() => handleDeleteUser(item)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })}
+          </tbody>
+        </Table>
+      </div>
       <ReactPaginate
         previousLabel="Previous"
         nextLabel="Next"

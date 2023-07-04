@@ -10,7 +10,7 @@
 }
 
 .add-new {
-    display: flex;
+    // display: flex;
     justify-content: space-between;
     align-items: center;
     .group-btns {
@@ -18,3 +18,12 @@
         gap: 10px;
     }
   }
+
+  .customize-table{
+        width: inherit;
+        overflow-x: auto;
+  }
+
+  .pagination{
+    justify-content: center;
+  } 

@@ -15,6 +15,12 @@ function Login() {
 
   const [loadingApi, setLoadingApi] = useState(false);
 
+  const handlePressEnter = (e) => {
+    if (e && e.key === "Enter") {
+      handleLogin();
+    }
+  };
+
   // useEffect(() => {
   //   let token = localStorage.getItem("token");
   //   if (token) {
@@ -34,7 +40,7 @@ function Login() {
       return;
     }
     setLoadingApi(true);
-    let res = await loginApi(email, password);
+    let res = await loginApi(email.trim(), password);
     if (res && res.token) {
       loginContext(email, res.token);
       toast.success("Login successfully");
@@ -45,6 +51,7 @@ function Login() {
         setLoadingApi(false);
       }
     }
+
     console.log(res);
   };
 
@@ -66,6 +73,7 @@ function Login() {
           placeholder="Password..."
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          onKeyDown={(e) => handlePressEnter(e)}
         />
         <button
           className={email && password ? "active" : ""}

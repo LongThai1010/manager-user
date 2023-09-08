@@ -7,7 +7,7 @@ function ModalEditUser(props) {
   const { show, handleClose, dataUserEdit, handleEditUserFromModal } = props;
   const [name, setName] = useState("");
   const [job, setJob] = useState("");
-
+  
   const handleEditUser = async () => {
     let res = await putUpdateUser(name, job);
     if (res && res.updateAt)

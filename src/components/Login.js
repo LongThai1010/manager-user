@@ -89,7 +89,6 @@ function Login() {
           &nbsp; Login
         </button>
         <div className="back">
-          {" "}
           <span onClick={() => handleGoBack()}> --Go back</span>
         </div>
       </div>
